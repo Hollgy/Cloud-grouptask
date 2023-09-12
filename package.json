@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Hollgy/Cloud-grouptask/issues"
   },
-  "homepage": "https://github.com/Hollgy/Cloud-grouptask#readme"
+  "homepage": "https://github.com/Hollgy/Cloud-grouptask#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1455.0"
+  }
 }
