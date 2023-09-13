@@ -1,13 +1,11 @@
-import * as dotenv from 'dotenv'
-dotenv.config()
 import React, { useState } from 'react';
 import './App.css';
 import AWS from 'aws-sdk';
 import { useEffect } from 'react';
 
 AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: '',
+    secretAccessKey: '',
     region: 'eu-north-1',
 });
 
