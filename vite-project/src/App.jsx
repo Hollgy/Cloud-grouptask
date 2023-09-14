@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import AWS from 'aws-sdk';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import AWS from "aws-sdk";
 
 AWS.config.update({
-    accessKeyId: '',
-    secretAccessKey: '',
-    region: 'eu-north-1',
+    accessKeyId: "",
+    secretAccessKey: "",
+    region: "eu-north-1",
 });
 
 const s3 = new AWS.S3();
@@ -26,23 +26,23 @@ function App() {
 
     const handleUpload = () => {
         if (!selectedFile) {
-            alert('Välj en fil först.');
+            alert("Välj en fil först.");
             return;
         }
 
         const params = {
-            Bucket: 'gruppfunktion', // Upload to the first bucket
+            Bucket: "gruppfunktion", // Upload to the first bucket
             Key: selectedFile.name,
             Body: selectedFile,
             ContentType: selectedFile.type,
-            ACL: 'public-read', // Set ACL to public-read to make the file accessible
+            ACL: "public-read", // Set ACL to public-read to make the file accessible
         };
 
         s3.upload(params, (err, data) => {
             if (err) {
-                console.error('Fel vid uppladdning:', err);
+                console.error("Fel vid uppladdning:", err);
             } else {
-                console.log('Bilden laddades upp!:', data.Location);
+                console.log("Bilden laddades upp!:", data.Location);
                 // No need to refresh images, as they are now in the first bucket
             }
         });
@@ -50,12 +50,12 @@ function App() {
 
     const getFolders = () => {
         const params = {
-            Bucket: 'grupparbetestoragebucket', // Fetch folders from the second bucket
+            Bucket: "grupparbetestoragebucket", // Fetch folders from the second bucket
         };
 
         s3.listObjectsV2(params, (err, data) => {
             if (err) {
-                console.error('Fel vid hämtning av mappar:', err);
+                console.error("Fel vid hämtning av mappar:", err);
             } else {
                 const folders = data.CommonPrefixes.map((prefix) => prefix.Prefix);
                 setFolders(folders); // Update state with folders
@@ -65,13 +65,13 @@ function App() {
 
     const getImagesInFolder = (folder) => {
         const params = {
-            Bucket: 'grupparbetestoragebucket', // Fetch images from the second bucket
+            Bucket: "grupparbetestoragebucket", // Fetch images from the second bucket
             Prefix: folder, // Set the folder as the prefix to get images in that folder (without leading slash)
         };
 
         s3.listObjectsV2(params, (err, data) => {
             if (err) {
-                console.error('Fel vid hämtning av bilder:', err);
+                console.error("Fel vid hämtning av bilder:", err);
             } else {
                 const images = data.Contents.map((obj) => obj.Key);
                 setImages(images); // Update state with images in the folder
@@ -82,26 +82,50 @@ function App() {
 
     return (
         <>
-            <h1>Ladda upp din bild här</h1>
-            <div>
-                <input onChange={handleFileChange} type="file" />
-                <button onClick={handleUpload}>Ladda Upp</button>
-            </div>
-            <h2>Mappar i S3-bucket:</h2>
-            <ul>
-                {folders.map((folder, index) => (
-                    <li key={folder}>
-                        <a href={`https://grupparbetestoragebucket.s3.eu-north-1.amazonaws.com/${folder}`} onClick={() => getImagesInFolder(folder)}>{folder}</a>
-                    </li>
-                ))}
-            </ul>
+            <div className="wrapper">
+                <div className="rubrik">
+                    <h1>Ladda upp din bild här</h1>
+                    <div>
+                        <input onChange={handleFileChange} type="file" />
+                        <button onClick={handleUpload}>Ladda Upp</button>
+                    </div>
+                </div>
+                <div className="filer">
+                    <div className="bucket-1">
+                        <div>
+                            <h2>Mappar i S3-bucket:</h2>
+                        </div>
 
-            <h2>Bilder i S3-bucket:</h2>
-            <ul>
-                {images.map((image, index) => (
-                    <li key={image}><img src={`https://grupparbetestoragebucket.s3.eu-north-1.amazonaws.com/${currentFolder}/${image}`} alt={`Image ${index}`} /></li>
-                ))}
-            </ul>
+                        <ul>
+                            {folders.map((folder, index) => (
+                                <li key={folder}>
+                                    <a
+                                        href={`https://grupparbetestoragebucket.s3.eu-north-1.amazonaws.com/${folder}`}
+                                        onClick={() => getImagesInFolder(folder)}
+                                    >
+                                        {folder}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="bucket-2">
+                        <h2>Bilder i S3-bucket:</h2>
+
+                        <ul>
+                            {images.map((image, index) => (
+                                <li key={image}>
+                                    <img
+                                        src={`https://grupparbetestoragebucket.s3.eu-north-1.amazonaws.com/${currentFolder}/${image}`}
+                                        alt={`Image ${index}`}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </>
     );
 }

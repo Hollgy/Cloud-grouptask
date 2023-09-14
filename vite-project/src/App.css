@@ -1,0 +1,101 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    background-color: rgb(237, 229, 219);
+    min-height: 100vh;
+}
+
+
+.rubrik{
+    margin-top:2em ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid rgb(211, 200, 200);
+    align-items: center;
+    padding: 1em;
+    border-radius: 5px;
+}
+
+.rubrik h1{
+    color: rgb(30, 28, 28);
+}
+
+.filer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: self-start;
+    gap: 2em;
+}
+
+.bucket-1{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid rgb(211, 200, 200);
+    padding: 1em;
+    gap: 1em;
+    border-radius: 5px;
+}
+.bucket-2{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid rgb(211, 200, 200);
+    padding: 1em;
+    gap: 1em;
+    border-radius: 5px;
+}
+
+.bucket-2 h2, .bucket-1 h2{
+    text-align: center;
+}
+
+img{
+    width: 200px;
+    height: 200px;
+    border-radius: 4px;
+}
+
+.ul-div-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+ul{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    flex-direction: column;
+    list-style: none;
+}
+
+button, input::file-selector-button{
+    margin-top: .5em;
+    color: white;
+    font-size: 18px;
+    border: none;
+    padding: .5em;
+    background-color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid black;
+}
+button:hover, input::file-selector-button:hover{
+    color: black;
+    background-color: white;
+    border: 2px solid black;
+
+}
