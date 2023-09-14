@@ -3,8 +3,8 @@ import './App.css';
 import AWS from 'aws-sdk';
 
 AWS.config.update({
-    accessKeyId: 'AKIAQ4EYTWD2PIOM4YOW',
-    secretAccessKey: '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',
+    accessKeyId: '',
+    secretAccessKey: '',
     region: 'eu-north-1',
 });
 
