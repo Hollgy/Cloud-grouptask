@@ -12,6 +12,7 @@
     "dependencies": {
         "aws-sdk": "^2.1456.0",
         "dotenv": "^16.3.1",
+        "mime-types": "^2.1.35",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
     },
