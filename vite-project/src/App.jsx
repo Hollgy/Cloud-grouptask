@@ -40,6 +40,7 @@ function App() {
             ContentType: selectedFile.type,
             ACL: "public-read",
             Tagging: `fileType=${fileType}`,
+
         };
 
         s3.upload(params, (err, data) => {
@@ -69,7 +70,7 @@ function App() {
 
     const handleSearch = () => {
         if (!searchCriteria) {
-            alert("Ange sökkriterier.");
+            setSearchResults([]); // Återställ resultatlistan när sökfältet är tomt
             return;
         }
     
@@ -91,9 +92,6 @@ function App() {
             }
         });
     };
-    
-    
-
     return (
         <>
             <div className="wrapper">
