@@ -13,9 +13,11 @@ const s3 = new AWS.S3();
 function App() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [images, setImages] = useState([]);
+    const [searchCriteria, setSearchCriteria] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
 
     useEffect(() => {
-        getImagesFromAllFolders(); // Fetch images from all folders
+        getImagesFromAllFolders();
     }, []);
 
     const handleFileChange = (event) => {
@@ -29,15 +31,15 @@ function App() {
         }
 
         const fileType = selectedFile.name.split(".").pop();
-
         const prefix = fileType || "övrigt";
 
         const params = {
-            Bucket: "gruppfunktion", // Upload to the first bucket
+            Bucket: "gruppfunktion",
             Key: `${prefix}/${selectedFile.name}`,
             Body: selectedFile,
             ContentType: selectedFile.type,
-            ACL: "public-read", // Set ACL to public-read to make the file accessible
+            ACL: "public-read",
+            Tagging: `fileType=${fileType}`,
         };
 
         s3.upload(params, (err, data) => {
@@ -45,8 +47,7 @@ function App() {
                 console.error("Fel vid uppladdning:", err);
             } else {
                 console.log("Bilden laddades upp!:", data.Location);
-
-                getImagesFromAllFolders(); // Fetch images from all folders again
+                getImagesFromAllFolders();
             }
         });
     };
@@ -55,15 +56,43 @@ function App() {
         const params = {
             Bucket: "gruppfunktion",
         };
+
         s3.listObjectsV2(params, (err, data) => {
             if (err) {
                 console.error("Fel vid hämtning av bilder:", err);
             } else {
                 const images = data.Contents.map((obj) => obj.Key);
-                setImages(images); // Update state with images from all folders
+                setImages(images);
             }
         });
     };
+
+    const handleSearch = () => {
+        if (!searchCriteria) {
+            alert("Ange sökkriterier.");
+            return;
+        }
+    
+        const params = {
+            Bucket: "gruppfunktion",
+        };
+    
+        s3.listObjectsV2(params, (err, data) => {
+            if (err) {
+                console.error("Fel vid hämtning av bilder:", err);
+            } else {
+                const allImages = data.Contents.map((obj) => obj.Key);
+    
+                const searchResults = allImages.filter((image) =>
+                    image.toLowerCase().includes(searchCriteria.toLowerCase())
+                );
+    
+                setSearchResults(searchResults);
+            }
+        });
+    };
+    
+    
 
     return (
         <>
@@ -78,19 +107,38 @@ function App() {
                         <button onClick={handleUpload}>Ladda Upp</button>
                     </div>
                 </div>
+                    <div className="search">
+                        <h2>Sök efter bilder</h2>
+                        <input
+                            type="text"
+                            placeholder="Ange sökkriterier"
+                            value={searchCriteria}
+                            onChange={(e) => setSearchCriteria(e.target.value)}
+                        />
+                        <button className="search-button" onClick={handleSearch}>Sök</button>
+                    </div>
                 <div className="filer">
                     <div className="bucket-2">
                         <h2>Bilder från vårat Bröllop:</h2>
 
                         <ul>
-                            {images.map((image, index) => (
-                                <li key={image}>
-                                    <img
-                                        src={`https://gruppfunktion.s3.eu-north-1.amazonaws.com/${image}`}
-                                        alt={`Image ${index}`}
-                                    />
-                                </li>
-                            ))}
+                            {searchResults.length > 0
+                                ? searchResults.map((image, index) => (
+                                    <li key={image}>
+                                        <img
+                                            src={`https://gruppfunktion.s3.eu-north-1.amazonaws.com/${image}`}
+                                            alt={`Image ${index}`}
+                                        />
+                                    </li>
+                                ))
+                                : images.map((image, index) => (
+                                    <li key={image}>
+                                        <img
+                                            src={`https://gruppfunktion.s3.eu-north-1.amazonaws.com/${image}`}
+                                            alt={`Image ${index}`}
+                                        />
+                                    </li>
+                                ))}
                         </ul>
                     </div>
                 </div>
